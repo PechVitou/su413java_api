@@ -5,7 +5,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # Copy Gradle wrapper and build files
-COPY gradlew . 
+COPY gradlew .
 COPY gradle gradle
 COPY build.gradle settings.gradle ./
 
@@ -15,14 +15,11 @@ COPY src src
 # Make Gradle wrapper executable
 RUN chmod +x ./gradlew
 
-# Build the project (skip tests to speed up)
-RUN ./gradlew build -x test
+# Build the Spring Boot JAR (skip tests for faster build)
+RUN ./gradlew bootJar -x test
 
-# Copy built JAR to a known name
-RUN cp build/libs/web-api-product-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose port
+# Expose the port Render will use
 EXPOSE 8080
 
-# Run the application using Render-assigned port
+# Run the Spring Boot application
 CMD ["sh", "-c", "java -jar app.jar --server.port=$PORT"]
