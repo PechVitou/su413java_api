@@ -44,6 +44,7 @@ public class MyController {
 	@DeleteMapping({"/{id}", "/id/{id}"})
 	public ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
 
+	    // Find product by ID
 	    var proOpt = productRepo.findById(id);
 
 	    if (proOpt.isEmpty()) {
@@ -52,8 +53,10 @@ public class MyController {
 	        );
 	    }
 
+	    // Get the product data before deleting
 	    Product product = proOpt.get();
-	   
+
+	    // Delete associated image if exists
 	    if (product.getImageUrl() != null) {
 	        File imageFile = new File("myApp" + product.getImageUrl());
 	        if (imageFile.exists()) {
@@ -61,13 +64,18 @@ public class MyController {
 	        }
 	    }
 
-
+	    // Delete the product from DB
 	    productRepo.deleteById(id);
 
+	    // Return deleted product info in response
 	    return ResponseEntity.ok(
-	            Map.of("message", "Product deleted successfully")
+	            Map.of(
+	                "message", "Product deleted successfully",
+	                "Deleted Product", product
+	            )
 	    );
 	}
+
 
 	
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
