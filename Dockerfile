@@ -18,6 +18,9 @@ RUN chmod +x ./gradlew
 # Build the Spring Boot JAR (skip tests for faster build)
 RUN ./gradlew bootJar -x test
 
+# Copy the built JAR to the working directory as app.jar
+RUN cp build/libs/app.jar ./app.jar
+
 # Expose the port Render will use
 EXPOSE 8080
 
